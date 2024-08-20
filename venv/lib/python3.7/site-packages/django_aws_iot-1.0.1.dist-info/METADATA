@@ -1,0 +1,71 @@
+Metadata-Version: 2.1
+Name: django-aws-iot
+Version: 1.0.1
+Summary: A django module that allows to connect and publish messages to AWS IoT
+Home-page: https://github.com/anexia/django-aws-iot
+Author: Harald Nezbeda
+Author-email: hnezbeda@anexia-it.com
+License: MIT License
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.2
+Classifier: Framework :: Django :: 4.0
+Classifier: Framework :: Django :: 4.1
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Description-Content-Type: text/markdown
+Requires-Dist: awsiotsdk
+Requires-Dist: django
+
+# Django AWS IoT
+[![PyPI](https://badge.fury.io/py/django-aws-iot.svg)](https://pypi.org/project/django-aws-iot/)
+[![Test Status](https://github.com/anexia/django-aws-iot/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/anexia/django-aws-iot/actions/workflows/tests.yml)
+[![Codecov](https://codecov.io/gh/anexia/django-aws-iot/branch/main/graph/badge.svg)](https://codecov.io/gh/anexia/django-aws-iot)
+
+A django module that allows to connect and publish messages to AWS IoT
+
+# Installation
+
+Install using pip:
+
+```shell
+pip install django-aws-iot
+```
+
+Extend django settings:
+
+```python
+AWS_IOT_ENABLED = True
+AWS_IOT_SERVER = "server.amazonaws.com"
+AWS_IOT_CLIENT_ID = "Thing-Name"
+AWS_IOT_CERT_PATH = "/certificates/8a6a6cfdf1-certificate.pem.crt"
+AWS_IOT_KEY_PATH = "/certificates/8a6a6cfdf1-private.pem.key"
+AWS_IOT_ROOT_CERT_PATH = "/certificates/AmazonRootCA1.pem"
+```
+
+# Usage
+
+Currently the library only supports publishing messages to AWS IoT:
+
+
+```python
+from django_aws_iot.aws_iot import mqtt_publish
+
+
+mqtt_publish(
+    'topic/123',
+    {
+        'foo': 'bar'
+    }
+)
+```
+
+

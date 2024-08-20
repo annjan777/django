@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href=""><img src="{% static 'images/logo.jpg' %}" alt="CRDController Logo" class="logo"></a>
+            <div class="user-menu">
+                {{ user.username }}
+                <svg class="user-icon" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <div class="dropdown-content">
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.is_staff %}
+                            <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+                        {% else %}
+                            <a href="{% url 'user_dashboard' %}">User Dashboard</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                        <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'update' %}">Status & Update</a></li>
+                <li><a href="{% url 'debug' %}">Debug</a></li>
+                <li><a href="{% url 'view_logs' %}">Logs</a></li>
+            </ul>
+        </nav>
+        <div class="dashboard">
+            <h2>Welcome to the Admin Dashboard, {{ user.username }}!</h2>
+        
+            <div class="add-user-form">
+                <h4>Add a new user:</h4>
+                <form method="post" action="{% url 'admin_dashboard' %}">
+                    {% csrf_token %}
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><label for="username">Username:</label></td>
+                                <td><input type="text" id="username" name="username" required></td>
+                            </tr>
+                            <tr>
+                                <td><label for="password">Password:</label></td>
+                                <td><input type="password" id="password" name="password" required></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><button type="submit" name="add_user">Add User</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        
+            <div class="modify-user-form">
+                <h4>Modify an existing user's password:</h4>
+                <form method="post" action="{% url 'admin_dashboard' %}">
+                    {% csrf_token %}
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><label for="user_id">User ID:</label></td>
+                                <td><input type="text" id="user_id" name="user_id" required></td>
+                            </tr>
+                            <tr>
+                                <td><label for="new_password">New Password:</label></td>
+                                <td><input type="password" id="new_password" name="new_password" required></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><button type="submit" name="modify_user">Modify Password</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        
+            <div class="existing-users">
+                <h4>Existing users:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Is Superuser</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{% if user.is_superuser %} Yes {% else %} No {% endif %}</td>
+                                <td>
+                                    <form method="post" action="{% url 'admin_dashboard' %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_user" value="1">
+                                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                                        <button type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="logout">
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+        
+</body>
+</html>
+

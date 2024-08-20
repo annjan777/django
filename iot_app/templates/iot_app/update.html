@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRD Controller</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href=""><img src="{% static 'images/logo.jpg' %}" alt="CRDController Logo" class="logo"></a>
+            <div class="user-menu">
+                {{ user.username }}
+                <svg class="user-icon" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <div class="dropdown-content">
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.is_staff %}
+                            <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+                        {% else %}
+                            <a href="{% url 'user_dashboard' %}">User Dashboard</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                        <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'update' %}">Status & Update</a></li>
+                <li><a href="{% url 'debug' %}">Debug</a></li>
+                <li><a href="{% url 'view_logs' %}">Logs</a></li>
+            </ul>
+        </nav>
+            <h1><u>Status & Update</u></h1>
+        
+        <div class="main-section">
+            
+            <div>
+                <div>
+                <h2>Status
+                    <button id="reloadButton" onclick="window.location.reload();"style="margin-left: 30px;border-radius: 50%;background-color: #e2e1e1;">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="25" viewBox="0 0 30 30">
+                            <path d="M 15 3 C 12.031398 3 9.3028202 4.0834384 7.2070312 5.875 A 1.0001 1.0001 0 1 0 8.5058594 7.3945312 C 10.25407 5.9000929 12.516602 5 15 5 C 20.19656 5 24.450989 8.9379267 24.951172 14 L 22 14 L 26 20 L 30 14 L 26.949219 14 C 26.437925 7.8516588 21.277839 3 15 3 z M 4 10 L 0 16 L 3.0507812 16 C 3.562075 22.148341 8.7221607 27 15 27 C 17.968602 27 20.69718 25.916562 22.792969 24.125 A 1.0001 1.0001 0 1 0 21.494141 22.605469 C 19.74593 24.099907 17.483398 25 15 25 C 9.80344 25 5.5490109 21.062074 5.0488281 16 L 8 16 L 4 10 z"></path>
+                        </svg>
+                    </button>
+                    
+                </h2>
+                
+                </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SL No.</th>
+                        <th>Parameters</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Manual Travel Length</td>
+                        <td id="manual_travel_length">{{ manual_travel_length }}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Motor Selection</td>
+                        <td id="motor_selection">{{ motor_selection }}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Feed Selection</td>
+                        <td id="feed_selection">{{ feed_selection }}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Local/Remote Mode Selection</td>
+                        <td id="local_remote_mode_selection">{{ local_remote_mode_selection }}</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Left-Right Sensor</td>
+                        <td id="left_right_sensor">{{ left_right_sensor }}</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Travel Sensor</td>
+                        <td id="travel_sensor">{{ travel_sensor }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            <!-- Update Section -->
+            <div>
+            <h2>Update</h2>
+            <form id="updateForm" action="{% url 'update' %}" method="post">
+                {% csrf_token %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SL No.</th>
+                            <th>Parameters</th>
+                            <th>Update Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Manual Travel Length</td>
+                            <td><input type="number" name="manual_travel_length"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>CRD System Health</td>
+                            <td>
+                                <select name="crd_system_health">
+                                    <option value="Good">Good</option>
+                                    <option value="Bad">Bad</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>CRD Current Operations</td>
+                            <td>
+                                <select name="crd_current_operations">
+                                    <option value="Winding">Winding</option>
+                                    <option value="Unwinding">Unwinding</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Control Supply</td>
+                            <td>
+                                <select name="control_supply">
+                                    <option value="On">On</option>
+                                    <option value="Off">Off</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>CRD On/Off</td>
+                            <td>
+                                <select name="crd_on_off">
+                                    <option value="On">On</option>
+                                    <option value="Off">Off</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Overload Trip</td>
+                            <td>
+                                <select name="overload_trip">
+                                    <option value="Safe">Safe</option>
+                                    <option value="Warning">Warning</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Cable Overtension</td>
+                            <td>
+                                <select name="cable_overtension">
+                                    <option value="Safe">Safe</option>
+                                    <option value="Warning">Warning</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Cable Slagness</td>
+                            <td>
+                                <select name="cable_slagness">
+                                    <option value="Safe">Safe</option>
+                                    <option value="Warning">Warning</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Chain Snap</td>
+                            <td>
+                                <select name="chain_snap">
+                                    <option value="Safe">Safe</option>
+                                    <option value="Warning">Warning</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit">Submit</button>
+            </form>     
+        </div></div>
+    </div>
+
+    <script>
+      $(document).ready(function() {
+    function fetchStatus() {
+        $.ajax({
+            url: "{% url 'get_status' %}",
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#manual_travel_length').text(data.manual_travel_length);
+                $('#motor_selection').text(data.motor_selection);
+                $('#feed_selection').text(data.feed_selection);
+                $('#local_remote_mode_selection').text(data.local_remote_mode_selection);
+                $('#left_right_sensor').text(data.left_right_sensor);
+                $('#travel_sensor').text(data.travel_sensor);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching status:", status, error);
+            }
+        });
+    }
+
+    function sendReloadMessage() {
+        $.ajax({
+            url: "{% url 'send_reload_message' %}",
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error sending reload message:", status, error);
+            }
+        });
+    }
+
+    // Click event handler for reload button
+    $('#reloadButton').click(function() {
+        sendReloadMessage(); // Send reload message when button is clicked
+    });
+
+    // Fetch status initially and then at regular intervals
+    fetchStatus();
+    setInterval(fetchStatus, 5000); // Fetch status every 5 seconds
+});
+
+        
+    </script>
+</body>
+</html>

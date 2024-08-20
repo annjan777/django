@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRD Controller</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    
+    <div class="container">
+        <header>
+            <a href=""><img src="{% static 'images/logo.jpg' %}" alt="CRDController Logo" class="logo"></a>
+            <div class="user-menu">
+                {{ user.username }}
+                <svg class="user-icon" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <div class="dropdown-content">
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.is_staff %}
+                            <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+                        {% else %}
+                            <a href="{% url 'user_dashboard' %}">User Dashboard</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                        <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+        
+
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'update' %}">Status & Update</a></li>
+                <li><a href="{% url 'debug' %}">Debug</a></li>
+                <li><a href="{% url 'view_logs' %}">Logs</a></li>
+            </ul>
+        </nav>
+
+        <div class="slideshow">
+            <button class="arrow left">&#10094;</button>
+            <img src="{% static 'images/slide1.png' %}" alt="Slide 1">
+            <img src="{% static 'images/slide2.png' %}" alt="Slide 2">
+            <button class="arrow right">&#10095;</button>
+        </div>
+
+        <div class="content-section">
+            <img src="{% static 'images/content1.jpg' %}" alt="Content Image 1">
+            <div class="text-content">
+                <h2>CRD MANAGEMENT SYSTEM</h2>
+                <p>We offer a comprehensive range of motorised cable and hose reeling drums used for safe & efficient transmission of power, data, and fluids from stationary to mobile equipment.</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="text-content">
+                <h2>Key Categories</h2>
+                <ul>
+                    <li>Cable Reeling Drum with stall torque motor drive</li>
+                    <li>Cable Reeling Drum with spring drive</li>
+                    <li>Cable Reeling Drum with counterweight drive</li>
+                    <li>Cable Reeling Drum with VVF-controlled special squirrel cage motor drive</li>
+                </ul>
+            </div>
+            <img src="{% static 'images/content2.jpg' %}" alt="Content Image 2">
+        </div>
+    </div>
+
+
+</body>
+</html>
